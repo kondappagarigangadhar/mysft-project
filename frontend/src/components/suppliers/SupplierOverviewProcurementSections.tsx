@@ -23,6 +23,13 @@ import { LuBoxes, LuDownload, LuEye, LuFile, LuGauge, LuIndianRupee, LuPlus, LuS
 const EMPTY_FIELD = '—';
 const MATERIAL_UNITS = ['Bag', 'MT', 'm³', 'Nos', 'kg', 'Litre', 'Ton', 'Sq.ft'] as const;
 const PRICING_STATUS_OPTIONS = ['Active', 'Inactive'] as const;
+let draftSelectionSequence = 0;
+
+function nextDraftSelectionId() {
+    draftSelectionSequence += 1;
+    return `draft-sel-${draftSelectionSequence}`;
+}
+
 function formatInr(amount: number) {
     return `₹${amount.toLocaleString('en-IN')}`;
 }
@@ -262,7 +269,7 @@ export function SupplierOverviewProcurementSections({
             patchSelection(row.id, { selectedSupplierId: sid, material: m });
             return;
         }
-        onSelectionsChange([...(selections ?? []), { id: `draft-sel-${Date.now()}`, supplierId, selectedSupplierId: sid, material: m, tags: [] }]);
+        onSelectionsChange([...(selections ?? []), { id: nextDraftSelectionId(), supplierId, selectedSupplierId: sid, material: m, tags: [] }]);
     };
 
     type CompareCard = {

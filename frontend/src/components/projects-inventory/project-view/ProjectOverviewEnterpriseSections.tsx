@@ -40,6 +40,8 @@ import {
 } from './ProjectRecordCollapsibleSection';
 
 const EMPTY = '—';
+const APPROVAL_EXPIRY_WINDOW_MS = 1000 * 60 * 60 * 24 * 60;
+const REFERENCE_NOW_MS = Date.now();
 
 function mediaLinkLabel(url: string) {
     const u = url.trim();
@@ -588,7 +590,7 @@ export function ProjectOverviewEnterpriseSections({
 
     const expirySoon =
         enriched.approval_expiry_date &&
-        new Date(enriched.approval_expiry_date).getTime() - Date.now() < 1000 * 60 * 60 * 24 * 60;
+        new Date(enriched.approval_expiry_date).getTime() - REFERENCE_NOW_MS < APPROVAL_EXPIRY_WINDOW_MS;
 
     return (
         <div className="mt-4 space-y-4">
@@ -883,7 +885,8 @@ export function ProjectOverviewRightRailEnhancements({
 
     return (
         <div className="mt-4 space-y-3">
-            {enriched.approval_expiry_date && new Date(enriched.approval_expiry_date).getTime() - Date.now() < 1000 * 60 * 60 * 24 * 60 ? (
+            {enriched.approval_expiry_date &&
+            new Date(enriched.approval_expiry_date).getTime() - REFERENCE_NOW_MS < APPROVAL_EXPIRY_WINDOW_MS ? (
                 <div className="rounded-lg border border-amber-200 bg-amber-50/80 px-3 py-2.5 text-xs text-amber-900">
                     <p className="flex items-center gap-1.5 font-semibold">
                         <LuTriangleAlert size={14} aria-hidden />

@@ -5,17 +5,19 @@ import { AICopilotPanel } from '@/components/ai/AICopilotPanel';
 import { AIConfidenceBar } from '@/components/ai/AIConfidenceBar';
 import type { Resident } from '@/lib/residentStore';
 
+const REFERENCE_NOW_MS = Date.now();
+
 function daysUntilExpiry(ymd: string): number | null {
     if (!/^\d{4}-\d{2}-\d{2}/.test(ymd.slice(0, 10))) return null;
     const t = Date.parse(`${ymd.slice(0, 10)}T12:00:00.000Z`);
     if (Number.isNaN(t)) return null;
-    return Math.ceil((t - Date.now()) / 86400000);
+    return Math.ceil((t - REFERENCE_NOW_MS) / 86400000);
 }
 
 function noticeEngagementScore(resident: Resident): number {
     const active = resident.notices.filter((n) => {
         const exp = Date.parse(n.expiryDate.length <= 10 ? `${n.expiryDate}T23:59` : n.expiryDate);
-        return !Number.isNaN(exp) && exp >= Date.now();
+        return !Number.isNaN(exp) && exp >= REFERENCE_NOW_MS;
     });
     if (!active.length) return 42;
     const push = active.filter((n) => n.sendPushNotification).length;
@@ -54,7 +56,7 @@ export function ResidentAIPanel({
         const vacantUnit = rec.occupancyStatus === 'Vacant';
         const activeNotices = resident.notices.filter((n) => {
             const exp = Date.parse(n.expiryDate.length <= 10 ? `${n.expiryDate}T23:59` : n.expiryDate);
-            return !Number.isNaN(exp) && exp >= Date.now();
+            return !Number.isNaN(exp) && exp >= REFERENCE_NOW_MS;
         });
         const engagement = noticeEngagementScore(resident);
 

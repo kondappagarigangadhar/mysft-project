@@ -65,10 +65,10 @@ export function ProjectMediaUploadPanel({ media, onMediaChange }: Props) {
             try {
                 let gallery = [...(media.gallery_images ?? [])];
                 let cover = media.cover_image ?? '';
-                let banner = media.project_banner ?? '';
+                const banner = media.project_banner ?? '';
                 let walkthrough = media.walkthrough_video ?? '';
                 let floorPdf = media.floor_plan_pdf ?? '';
-                let master = media.master_plan ?? '';
+                const master = media.master_plan ?? '';
 
                 for (const file of files) {
                     if (file.size > MAX_BYTES) {
