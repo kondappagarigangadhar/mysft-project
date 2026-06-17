@@ -1,4 +1,3 @@
-import asyncio
 import boto3
 from app.cloud.base import EmailProvider
 from app.core.config import settings
@@ -14,8 +13,7 @@ class SESEmail(EmailProvider):
         )
 
     async def send_email(self, to: str, subject: str, html_body: str) -> None:
-        await asyncio.to_thread(
-            self._client.send_email,
+        self._client.send_email(
             Source=settings.AWS_SES_FROM_EMAIL,
             Destination={"ToAddresses": [to]},
             Message={

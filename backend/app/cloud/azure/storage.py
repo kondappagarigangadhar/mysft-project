@@ -1,4 +1,3 @@
-import asyncio
 from datetime import datetime, timedelta, timezone
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
 from app.cloud.base import StorageProvider
@@ -12,10 +11,7 @@ class AzureBlobStorage(StorageProvider):
 
     async def upload_file(self, key: str, data: bytes, content_type: str) -> str:
         blob = self._client.get_blob_client(container=self._container, blob=key)
-        await asyncio.to_thread(
-            blob.upload_blob, data, overwrite=True,
-            content_settings={"content_type": content_type},
-        )
+        blob.upload_blob(data, overwrite=True, content_settings={"content_type": content_type})
         return key
 
     async def get_signed_url(self, key: str, expires_in: int = 3600) -> str:
@@ -33,4 +29,4 @@ class AzureBlobStorage(StorageProvider):
 
     async def delete_file(self, key: str) -> None:
         blob = self._client.get_blob_client(container=self._container, blob=key)
-        await asyncio.to_thread(blob.delete_blob)
+        blob.delete_blob()

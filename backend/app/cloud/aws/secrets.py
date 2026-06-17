@@ -1,4 +1,3 @@
-import asyncio
 import boto3
 from app.cloud.base import SecretsProvider
 from app.core.config import settings
@@ -14,5 +13,5 @@ class AWSSecrets(SecretsProvider):
         )
 
     async def get_secret(self, name: str) -> str:
-        resp = await asyncio.to_thread(self._client.get_secret_value, SecretId=name)
+        resp = self._client.get_secret_value(SecretId=name)
         return resp.get("SecretString", "")

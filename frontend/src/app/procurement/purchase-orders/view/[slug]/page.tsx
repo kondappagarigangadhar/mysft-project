@@ -31,6 +31,10 @@ export default function PurchaseOrderViewPage({ params }: { params: Promise<{ sl
         }
     }, [slug]);
 
+    if (!record && !createMode) {
+        return <PurchaseOrderNotFound />;
+    }
+
     const breadcrumbItems = useMemo(
         () =>
             buildPurchaseOrderBreadcrumbs({
@@ -40,10 +44,6 @@ export default function PurchaseOrderViewPage({ params }: { params: Promise<{ sl
             }),
         [createMode, returnPrSlug, record?.poNumber],
     );
-
-    if (!record && !createMode) {
-        return <PurchaseOrderNotFound />;
-    }
 
     return (
         <PurchaseOrderDetailShell breadcrumbItems={[...breadcrumbItems]}>

@@ -1,4 +1,3 @@
-import asyncio
 import boto3
 from app.cloud.base import SMSProvider
 from app.core.config import settings
@@ -14,8 +13,7 @@ class SNSSms(SMSProvider):
         )
 
     async def send_sms(self, to: str, message: str) -> None:
-        await asyncio.to_thread(
-            self._client.publish,
+        self._client.publish(
             PhoneNumber=to,
             Message=message,
             MessageAttributes={

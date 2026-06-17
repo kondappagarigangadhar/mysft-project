@@ -1,4 +1,3 @@
-import asyncio
 from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
 from app.cloud.base import SecretsProvider
@@ -13,5 +12,5 @@ class AzureKeyVault(SecretsProvider):
         )
 
     async def get_secret(self, name: str) -> str:
-        secret = await asyncio.to_thread(self._client.get_secret, name)
+        secret = self._client.get_secret(name)
         return secret.value or ""

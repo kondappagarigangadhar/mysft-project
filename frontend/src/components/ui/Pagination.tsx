@@ -28,8 +28,8 @@ function buildPageTokens(current: number, total: number): PageToken[] {
     }
     const tokens: PageToken[] = [1];
     const window = 1;
-    const start = Math.max(2, current - window);
-    const end = Math.min(total - 1, current + window);
+    let start = Math.max(2, current - window);
+    let end = Math.min(total - 1, current + window);
     if (start > 2) tokens.push('ellipsis');
     for (let p = start; p <= end; p++) tokens.push(p);
     if (end < total - 1) tokens.push('ellipsis');

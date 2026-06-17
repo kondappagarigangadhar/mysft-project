@@ -2,8 +2,8 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID
 from typing import Optional
 
-import bcrypt
 from jose import JWTError, jwt
+from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
@@ -11,15 +11,16 @@ from app.core.config import settings
 from app.db.session import get_db
 import asyncpg
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    return pwd_context.hash(password)
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return bcrypt.checkpw(plain.encode(), hashed.encode())
+    return pwd_context.verify(plain, hashed)
 
 
 def create_access_token(data: dict) -> str:
@@ -54,7 +55,7 @@ async def get_current_user(
     if not user_id:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     user = await db.fetchrow(
-        "SELECT id, organization_id, email, status FROM users WHERE id=$1 AND status != 'Inactive'",
+        "SELECT id, organization_id, email, status FROM users WHERE id=$1 AND deleted_at IS NULL",
         UUID(user_id),
     )
     if not user or user["status"] != "Active":
@@ -72,33 +73,33 @@ def require_permission(module: str, action: str):
             "SELECT role_id FROM user_roles WHERE user_id=$1",
             current_user["id"],
         )
+        if not role_ids:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No role assigned")
 
-        # Super admin bypasses all permission checks (no role needed either)
-        if role_ids:
-            is_super = await db.fetchval(
-                "SELECT 1 FROM roles WHERE id = ANY($1::uuid[]) AND role_name='Super Admin'",
-                [r["role_id"] for r in role_ids],
-            )
-            if is_super:
-                return current_user
-
-            has_perm = await db.fetchval(
-                """
-                SELECT 1 FROM role_permissions rp
-                JOIN permissions p ON p.id = rp.permission_id
-                WHERE rp.role_id = ANY($1::uuid[])
-                  AND p.module_name = $2 AND p.action = $3
-                """,
-                [r["role_id"] for r in role_ids],
-                module,
-                action,
-            )
-            if has_perm:
-                return current_user
-
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Permission denied: {module}:{action}",
+        # Super admin bypasses permission check
+        is_super = await db.fetchval(
+            "SELECT 1 FROM roles WHERE id = ANY($1::uuid[]) AND role_name='Super Admin'",
+            [r["role_id"] for r in role_ids],
         )
+        if is_super:
+            return current_user
+
+        has_perm = await db.fetchval(
+            """
+            SELECT 1 FROM role_permissions rp
+            JOIN permissions p ON p.id = rp.permission_id
+            WHERE rp.role_id = ANY($1::uuid[])
+              AND p.module_name = $2 AND p.action = $3
+            """,
+            [r["role_id"] for r in role_ids],
+            module,
+            action,
+        )
+        if not has_perm:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Permission denied: {module}:{action}",
+            )
+        return current_user
 
     return _check

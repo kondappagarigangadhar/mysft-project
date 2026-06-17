@@ -61,7 +61,7 @@ function normalizeMaterialRow(row: SupplierMaterialRow, fallbackCode: string): S
 
 function normalizeMaterials(rows: SupplierMaterialRow[], seed: SupplierMaterialRow[]): SupplierMaterialRow[] {
     if (!Array.isArray(rows)) return seed;
-    const seq = 1020;
+    let seq = 1020;
     return rows.map((r, i) => {
         const code = typeof r.materialCode === 'string' && r.materialCode.trim() ? r.materialCode.trim() : `MAT-${seq + i + 1}`;
         return normalizeMaterialRow(r as SupplierMaterialRow, code);

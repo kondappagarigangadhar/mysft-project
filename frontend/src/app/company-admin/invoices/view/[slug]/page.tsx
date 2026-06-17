@@ -30,6 +30,10 @@ export default function InvoiceViewPage({ params }: { params: Promise<{ slug: st
         }
     }, [slug]);
 
+    if (!invoice && !createMode) {
+        return <InvoiceNotFound />;
+    }
+
     const titleForBreadcrumb = createMode
         ? 'Create invoice'
         : invoice!.invoiceNumber?.trim() || invoice!.invoiceId;
@@ -44,10 +48,6 @@ export default function InvoiceViewPage({ params }: { params: Promise<{ slug: st
             }),
         [createMode, returnPrSlug, returnPoNumber, titleForBreadcrumb],
     );
-
-    if (!invoice && !createMode) {
-        return <InvoiceNotFound />;
-    }
 
     return (
         <InvoiceDetailShell breadcrumbItems={breadcrumbItems}>

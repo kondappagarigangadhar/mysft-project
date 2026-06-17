@@ -625,7 +625,19 @@ export function VendorProfilePage({ vendorId }: { vendorId: string }) {
     const utilityBtn = CTA_UTILITY_BTN;
 
     const readOnlyOps = isInlineEditing;
-    const v = (createMode ? createVendorRecord : (vendor ?? createVendorRecord)) as VendorRecord;
+
+    if (!vendor && !createMode) {
+        return (
+            <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-600">
+                <p>Vendor not found.</p>
+                <Link href="/company-admin/vendors" className="mt-3 inline-block font-medium text-[var(--cta-button-bg)] underline-offset-2 hover:underline">
+                    Back to vendor list
+                </Link>
+            </div>
+        );
+    }
+
+    const v = (createMode ? createVendorRecord : vendor) as VendorRecord;
 
     const vendorWorkflowSteps = useMemo(
         () =>
@@ -649,17 +661,6 @@ export function VendorProfilePage({ vendorId }: { vendorId: string }) {
         }),
         [tab, setTab, createMode],
     );
-
-    if (!vendor && !createMode) {
-        return (
-            <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-600">
-                <p>Vendor not found.</p>
-                <Link href="/company-admin/vendors" className="mt-3 inline-block font-medium text-[var(--cta-button-bg)] underline-offset-2 hover:underline">
-                    Back to vendor list
-                </Link>
-            </div>
-        );
-    }
 
     const breadcrumbLabel = createMode ? 'Create vendor' : v.name || 'Vendor';
     const displayName = (createMode || isInlineEditing) && inlineDraft.name.trim() ? inlineDraft.name.trim() : v.name;

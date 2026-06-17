@@ -1,11 +1,10 @@
 import time
+import json
 import logging
+from uuid import UUID
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
-from jose import JWTError, jwt
-
-from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -14,29 +13,24 @@ SKIP_AUDIT_PATHS = {"/api/v1/health", "/api/v1/auth/login", "/api/v1/auth/refres
 
 
 class TenantMiddleware(BaseHTTPMiddleware):
-    """Parses JWT from Authorization header and injects org/user context into request.state."""
+    """Injects organization_id from JWT claims into request.state."""
 
     async def dispatch(self, request: Request, call_next) -> Response:
         request.state.organization_id = None
         request.state.user_id = None
         request.state.user_role = None
 
-        auth_header = request.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer "):
-            token = auth_header[len("Bearer "):]
-            try:
-                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-                request.state.user_id = payload.get("sub")
-                request.state.organization_id = payload.get("org")
-                request.state.user_role = payload.get("role")
-            except JWTError:
-                pass  # Invalid token — let the route dependency reject it with 401
+        token_data = getattr(request.state, "token_data", None)
+        if token_data:
+            request.state.organization_id = token_data.get("organization_id")
+            request.state.user_id = token_data.get("sub")
+            request.state.user_role = token_data.get("role")
 
         return await call_next(request)
 
 
 class AuditMiddleware(BaseHTTPMiddleware):
-    """Logs all mutating requests to stdout after response. DB audit write happens in service layer."""
+    """Logs all mutating requests to audit_logs after response."""
 
     async def dispatch(self, request: Request, call_next) -> Response:
         start = time.time()
@@ -51,9 +45,10 @@ class AuditMiddleware(BaseHTTPMiddleware):
             user_id = getattr(request.state, "user_id", None)
             org_id = getattr(request.state, "organization_id", None)
             logger.info(
-                "AUDIT | %s %s | user=%s org=%s status=%s %dms",
-                request.method, request.url.path, user_id, org_id,
-                response.status_code, duration_ms,
+                f"AUDIT | {request.method} {request.url.path} | "
+                f"user={user_id} org={org_id} status={response.status_code} {duration_ms}ms"
             )
+            # Full async DB write happens in the audit service called from route handlers
+            # Middleware only logs; heavy audit diff is done at the service layer
 
         return response
