@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>mySFT — AI Features (Client Summary)</title>
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background: #fff;
+      line-height: 1.5;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.35rem;
+      color: var(--ink);
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.75rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 1.75rem 0 0.65rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid var(--accent);
+      color: var(--ink);
+    }
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 1.1rem 0 0.4rem;
+      color: var(--ink);
+    }
+    p, li { font-size: 0.9rem; color: var(--ink); }
+    ul { margin: 0.35rem 0 0.75rem 1.1rem; padding: 0; }
+    li { margin-bottom: 0.35rem; }
+    .muted { color: var(--muted); font-size: 0.85rem; }
+    .box {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+      margin: 1rem 0;
+    }
+    .metric {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .metric div {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.85rem;
+    }
+    .metric strong { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 0.2rem; }
+    .one-liner {
+      margin-top: 1.5rem;
+      padding: 1rem 1.15rem;
+      border-left: 4px solid var(--accent);
+      background: #eff6ff;
+      font-size: 0.9rem;
+    }
+    footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    @media print {
+      body { padding: 0.75in; max-width: none; }
+      h2 { break-after: avoid; }
+      .box, .one-liner { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>mySFT Real Estate CRM — AI Features</h1>
+  <p class="sub">Client summary · No new pages were added; existing modules were enhanced with passive insights, inline signals, and guided actions.</p>
+
+  <div class="box">
+    <p style="margin:0;"><strong>Scope at a glance</strong></p>
+    <div class="metric">
+      <div><strong>Route areas enhanced</strong>8 main CRM areas</div>
+      <div><strong>Customer portal</strong>1 global layout (all /customer/*)</div>
+      <div><strong>Admin header</strong>1 global AI entry (navbar)</div>
+      <div><strong>Backend</strong>Single /api/ai/* handler (demo or proxy)</div>
+    </div>
+  </div>
+
+  <h2>1. Leads list — /leads</h2>
+  <ul>
+    <li><strong>Table:</strong> “AI Lead Score” column (thermal band from score).</li>
+    <li><strong>Pipeline (Kanban):</strong> Compact High Intent / At risk badges on cards where rules apply.</li>
+  </ul>
+
+  <h2>2. Lead detail — /leads/view/[slug]</h2>
+  <ul>
+    <li><strong>Inline:</strong> High Intent and Low Response Risk badges beside the name.</li>
+    <li><strong>Passive AI:</strong> Insight strip on load (lead score / conversion-style messaging).</li>
+    <li><strong>AI Copilot (desktop, sticky):</strong> Next action, best time to contact, suggested pitch, confidence, and “Improve Conversion Strategy”.</li>
+  </ul>
+
+  <h2>3. Customer (buyer) — /company-admin/customers/view/[slug]</h2>
+  <ul>
+    <li><strong>Payments tab:</strong> “Explain Payment” for plain-language payment context.</li>
+  </ul>
+
+  <h2>4. Payment detail — /company-admin/booking-payment/payments/view/[slug]</h2>
+  <ul>
+    <li><strong>Priority block at top:</strong> AI payment insights load automatically.</li>
+    <li><strong>Risk / delay / recovery</strong> fields with confidence.</li>
+    <li><strong>Alert banner</strong> when delay risk is high (when indicated by the model).</li>
+    <li><strong>Smart Reminder:</strong> Three tone variants — Soft, Professional, Strict (copy each).</li>
+  </ul>
+
+  <h2>5. Installment tracking (shared component)</h2>
+  <ul>
+    <li><strong>Risk indicator</strong> per row with hover explanation.</li>
+    <li><strong>Visual emphasis</strong> for risky installments.</li>
+  </ul>
+
+  <h2>6. Project view — /projects-inventory/projects/view/[slug]</h2>
+  <ul>
+    <li><strong>AI project update</strong> near status.</li>
+    <li><strong>AI compliance check</strong> in the overview sidebar.</li>
+  </ul>
+
+  <h2>7. Documents — /documents</h2>
+  <ul>
+    <li><strong>Table + AI side panel:</strong> Summary, risks, clauses, actions, confidence, extracted data.</li>
+    <li><strong>Auto AI</strong> when the selected document changes (extract + risk + explain).</li>
+    <li><strong>Compliance</strong> section retained below the workspace.</li>
+  </ul>
+
+  <h2>8. Executive dashboard — /company-admin/dashboard</h2>
+  <ul>
+    <li><strong>Weekly AI summary</strong> (risk payments, hot leads, urgent actions, bullets, confidence).</li>
+    <li><strong>Ask AI</strong> bar for natural-language questions over workspace data.</li>
+  </ul>
+
+  <h2>9. Notifications — /notifications</h2>
+  <ul>
+    <li><strong>AI send guidance:</strong> Suggested best time and channel.</li>
+    <li><strong>Smart notification generator</strong> (type + context → preview + copy).</li>
+  </ul>
+
+  <h2>10. Customer portal — all /customer/* pages</h2>
+  <ul>
+    <li><strong>Global floating AI assistant</strong> on every customer route.</li>
+    <li><strong>Context-aware chat</strong> (includes current page path).</li>
+    <li><strong>Quick actions:</strong> Explain dues, Next payment date, Download receipt.</li>
+  </ul>
+
+  <h2>11. Global (not one page)</h2>
+  <ul>
+    <li><strong>Company admin navbar:</strong> AI (sparkles) entry with alert-style badge (demo).</li>
+    <li><strong>API:</strong> Central <code>/api/ai/...</code> routes — demo responses locally, or proxy to your AI backend via environment configuration.</li>
+  </ul>
+
+  <div class="one-liner">
+    <strong>One-line pitch:</strong> AI is embedded as a smart assistant inside existing CRM workflows — proactive insights where it helps, clear actions where it matters, without adding new screens or breaking the current layout.
+  </div>
+
+  <footer>
+    Generated for mySFT by Requanto Technologies. To save as PDF: open this file in Chrome/Edge → Print → Destination “Save as PDF”.
+  </footer>
+
+</body>
+</html>
