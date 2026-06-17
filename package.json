@@ -7,6 +7,7 @@
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && python -m main",
+    "postinstall": "cd frontend && npm install",
     "build": "cd frontend && npm run build",
     "start": "cd frontend && npm start",
     "install:all": "npm install && cd frontend && npm install"
